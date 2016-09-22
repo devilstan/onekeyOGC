@@ -54,7 +54,7 @@ retry_rename:
     
     
     lastrow = Cells(Rows.Count, 2).End(xlUp).Row
-    Range("A3:C" & lastrow).sort key1:=Range("A3:A" & lastrow), order1:=xlAscending, Header:=xlNo
+    Range("A3:C" & lastrow).sort key1:=Range("B3:B" & lastrow), order1:=xlAscending, Header:=xlNo
 
 End Sub
 
