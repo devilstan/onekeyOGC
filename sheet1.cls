@@ -34,7 +34,7 @@ Private Sub onekeyOGC_Click()
         'print folder path
         Cells(i + 1, 3) = objSubFolder.Path
         If Cells(i + 1, 2) <> 0 Then
-            If InStr(1, Cells(i + 1, 1), Cells(i + 1, 2)) = 0 Then
+            If InStr(1, Cells(i + 1, 1), Cells(i + 1, 2)) <> 1 Then
                 str_tmp = Range("B1").Cells.Value & "\" & Cells(i + 1, 2)
                 On Error Resume Next
 retry_rename:
