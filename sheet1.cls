@@ -11,6 +11,7 @@ Private Sub onekeyOGC_Click()
     Dim objSubFolder As Object
     Dim i As Integer
     Dim lastrow As Long
+    Dim lastrow2 As Long
     Dim str_tmp As String
     
     'clear first
@@ -46,15 +47,20 @@ retry_rename:
                 End If
                 On Error GoTo 0
             End If
+        Else
+            'Cells(i + 1, 2) = Cells(i + 1, 1)
         End If
         'ActiveWindow.ScrollRow = i + 1
         i = i + 1
-        Sleep 100
+        Sleep 30
     Next objSubFolder
     
     
     lastrow = Cells(Rows.Count, 2).End(xlUp).Row
     Range("A3:C" & lastrow).sort key1:=Range("B3:B" & lastrow), order1:=xlAscending, Header:=xlNo
+    lastrow = Cells(Rows.Count, 2).End(xlUp).Row + 1
+    lastrow2 = Cells(Rows.Count, 1).End(xlUp).Row
+    Range("A" & lastrow & ":C" & lastrow2).sort key1:=Range("A" & lastrow & ":A" & lastrow2), order1:=xlAscending, Header:=xlNo
 
 End Sub
 
@@ -78,7 +84,7 @@ Private Function namechk(input_str As String) As String
             
             lpos = InStr(UCase(input_str), UCase(thelabel))
             If lpos > 0 Then
-                'æ‰¾åˆ°å» ç‰Œå­—ä¸²
+                '§ä¨ì¼tµP¦r¦ê
                 Dim ccnt As Integer
                 ccnt = 0
                 For c = lpos + Len(lbl.Cells.Value) To Len(input_str)
