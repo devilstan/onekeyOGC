@@ -13,6 +13,8 @@ Private Sub onekeyOGC_Click()
     Dim lastrow As Long
     Dim lastrow2 As Long
     Dim str_tmp As String
+    Dim label_rng As Range
+    Dim find_result As Variant
     
     'clear first
     Dim rowcnt As Integer
@@ -25,32 +27,43 @@ Private Sub onekeyOGC_Click()
     Set objFSO = CreateObject("Scripting.FileSystemObject")
     'Get the folder object
     Set objFolder = objFSO.GetFolder(Range("B1").Cells.Value)
+    With Worksheets("label")
+        lastrow = .Cells(Rows.Count, 2).End(xlUp).Row
+        Set label_rng = .Range("A2:A" & lastrow)
+    End With
     i = 2
     'loops through each file in the directory and prints their names and path
     For Each objSubFolder In objFolder.subfolders
         DoEvents
         'print folder name
         Cells(i + 1, 1) = objSubFolder.Name
-        Cells(i + 1, 2) = namechk(objSubFolder.Name)
-        'print folder path
-        Cells(i + 1, 3) = objSubFolder.Path
-        If Cells(i + 1, 2) <> 0 Then
-            If InStr(1, Cells(i + 1, 1), Cells(i + 1, 2)) <> 1 Then
-                str_tmp = Range("B1").Cells.Value & "\" & Cells(i + 1, 2)
-                On Error Resume Next
+        Set find_result = label_rng.Find(What:=Split(Cells(i + 1, 1), "-")(0), After:=label_rng(1), LookIn:=xlFormulas, _
+                                    LookAt:=xlWhole, SearchOrder:=xlByRows, SearchDirection:=xlNext, _
+                                    MatchCase:=True, SearchFormat:=False)
+        If find_result Is Nothing Then
+            Cells(i + 1, 2) = namechk(objSubFolder.Name)
+            'print folder path
+            Cells(i + 1, 3) = objSubFolder.Path
+            If Cells(i + 1, 2) <> 0 Then
+                If InStr(1, Cells(i + 1, 1), Cells(i + 1, 2)) <> 1 Then
+                    str_tmp = Range("B1").Cells.Value & "\" & Cells(i + 1, 2)
+                    On Error Resume Next
 retry_rename:
-                Name Cells(i + 1, 3) As str_tmp
-                If Err.Number = 5 Then
-                    str_tmp = str_tmp & "(1)"
-                    Err.Clear
-                    GoTo retry_rename
+                    Name Cells(i + 1, 3) As str_tmp
+                    If Err.Number = 5 Then
+                        str_tmp = str_tmp & "(1)"
+                        Err.Clear
+                        GoTo retry_rename
+                    End If
+                    On Error GoTo 0
                 End If
-                On Error GoTo 0
+            Else
+                'Cells(i + 1, 2) = Cells(i + 1, 1)
             End If
         Else
-            'Cells(i + 1, 2) = Cells(i + 1, 1)
+            Cells(i + 1, 2) = Cells(i + 1, 1)
+            Cells(i + 1, 3) = objSubFolder.Path
         End If
-        'ActiveWindow.ScrollRow = i + 1
         i = i + 1
         Sleep 30
     Next objSubFolder
